@@ -3,11 +3,8 @@
 /*
    This sample sketch demonstrates the normal use of a TinyGPS++ (TinyGPSPlus) object.
    It requires the use of SoftwareSerial, and assumes that you have a
-   4800-baud serial GPS device hooked up on pins 4(rx) and 3(tx).
+   38400-baud serial GPS device hooked up on pins Serial1 and Serial2.
 */
-// The serial connection to the GPS device
-//static const int RXPin = 50, TXPin = 51;
-//SoftwareSerial ss(RXPin, TXPin);
 
 //A modification here not softwareSerial and 9600 baud
 static const uint32_t GPSBaud = 38400;
@@ -18,7 +15,6 @@ TinyGPSPlus gps;
 void setup()
 {
   Serial.begin(9600);
-//ss.begin(GPSBaud);
   Serial1.begin(GPSBaud);
 //  Serial2.begin(GPSBaud);
   Serial.println(F("DeviceExample.ino"));
@@ -31,9 +27,6 @@ void setup()
 void loop()
 {
   // This sketch displays information every time a new sentence is correctly encoded.
-//  while (ss.available() > 0)
-//    if (gps.encode(ss.read()))
-//      displayInfo();
   while (Serial1.available() > 0)
     if (gps.encode(Serial1.read()))
       displayInfo();
