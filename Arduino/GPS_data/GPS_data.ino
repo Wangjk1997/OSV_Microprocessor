@@ -1,90 +1,79 @@
 #include <TinyGPS++.h>
-#include <SoftwareSerial.h>
-/*
-   This sample sketch demonstrates the normal use of a TinyGPS++ (TinyGPSPlus) object.
-   It requires the use of SoftwareSerial, and assumes that you have a
-   38400-baud serial GPS device hooked up on pins Serial1 and Serial2.
-*/
 
 //A modification here not softwareSerial and 9600 baud
 static const uint32_t GPSBaud = 38400;
 
 // The TinyGPS++ object
-TinyGPSPlus gps;
-
+TinyGPSPlus gps_left;
+TinyGPSPlus gps_right;
+//position acquired by GPS stored in Arduino
+double Latitude_left = 0;
+double Longitude_left = 0;
+double Latitude_right = 0;
+double Longitude_right = 0;
+int a = 0;
+  
 void setup()
 {
   Serial.begin(9600);
+  //Serial1 for gps_left
   Serial1.begin(GPSBaud);
-//  Serial2.begin(GPSBaud);
-  Serial.println(F("DeviceExample.ino"));
-  Serial.println(F("A simple demonstration of TinyGPS++ with an attached GPS module"));
-  Serial.print(F("Testing TinyGPS++ library v. ")); Serial.println(TinyGPSPlus::libraryVersion());
-  Serial.println(F("by Mikal Hart"));
-  Serial.println();
+  //Serial2 for gps_right
+  Serial2.begin(GPSBaud);
 }
 
 void loop()
 {
-  // This sketch displays information every time a new sentence is correctly encoded.
-  while (Serial1.available() > 0)
-    if (gps.encode(Serial1.read()))
-      displayInfo();
-
-  if (millis() > 5000 && gps.charsProcessed() < 10)
+  if (Serial1.available() > 0)
   {
-    Serial.println(F("No GPS detected: check wiring."));
-    while(true);
-  }
-}
-
-void displayInfo()
-{
-  Serial.print(F("Location: ")); 
-  if (gps.location.isValid())
+    if (gps_left.encode(Serial1.read()))
+    {
+      Serial.println("left");
+      Serial.print(F("Location: ")); 
+      if (gps_left.location.isValid())
+      {
+        Serial.print(gps_left.location.lat(), 6);
+        Serial.print(F(","));
+        Serial.print(gps_left.location.lng(), 6);
+        Serial.println();
+        Latitude_left = gps_left.location.lat();
+        Longitude_left = gps_left.location.lng();
+        }
+      else
+      {
+        Serial.print(F("INVALID"));
+        }
+      }
+    }
+    
+  if (Serial2.available() > 0)
   {
-    Serial.print(gps.location.lat(), 6);
-    Serial.print(F(","));
-    Serial.print(gps.location.lng(), 6);
-  }
-  else
+    if (gps_right.encode(Serial2.read()))
+    {
+      Serial.println("right");
+      Serial.print(F("Location: ")); 
+      if (gps_right.location.isValid())
+      {
+        Serial.print(gps_right.location.lat(), 6);
+        Serial.print(F(","));
+        Serial.print(gps_right.location.lng(), 6);
+        Serial.println();
+        Latitude_right = gps_right.location.lat();
+        Longitude_right = gps_right.location.lng();
+        }
+      else
+      {
+        Serial.print(F("INVALID"));
+        }
+      }
+    }
+  if (Serial.available() > 0)
   {
-    Serial.print(F("INVALID"));
-  }
-
-  Serial.print(F("  Date/Time: "));
-  if (gps.date.isValid())
-  {
-    Serial.print(gps.date.month());
-    Serial.print(F("/"));
-    Serial.print(gps.date.day());
-    Serial.print(F("/"));
-    Serial.print(gps.date.year());
-  }
-  else
-  {
-    Serial.print(F("INVALID"));
-  }
-
-  Serial.print(F(" "));
-  if (gps.time.isValid())
-  {
-    if (gps.time.hour() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.hour());
-    Serial.print(F(":"));
-    if (gps.time.minute() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.minute());
-    Serial.print(F(":"));
-    if (gps.time.second() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.second());
-    Serial.print(F("."));
-    if (gps.time.centisecond() < 10) Serial.print(F("0"));
-    Serial.print(gps.time.centisecond());
-  }
-  else
-  {
-    Serial.print(F("INVALID"));
-  }
-
-  Serial.println();
+    a = Serial.read();
+    Serial.print(a);
+    Serial.print(" ");
+    Serial.print(a);
+    Serial.write(13);
+    Serial.write(10);
+    }   
 }
