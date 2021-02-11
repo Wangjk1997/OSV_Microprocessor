@@ -70,9 +70,9 @@ void loop()
   if (Serial.available() > 0)
   {
     a = Serial.read();
-    Serial.print(a);
+    Serial.print(Latitude_right);
     Serial.print(" ");
-    Serial.print(a);
+    Serial.print(Longitude_right);
     Serial.write(13);
     Serial.write(10);
     }   
