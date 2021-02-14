@@ -1,4 +1,4 @@
-function output = location(gpsData)
+function output = location(gps_data)
     persistent Latitude_left_base;
     persistent Longitude_left_base;
     persistent Height_left_base;
@@ -7,7 +7,7 @@ function output = location(gpsData)
     persistent Height_right_base;
     persistent wgs84;
     
-    split_result = strsplit(gpsData);
+    split_result = strsplit(gps_data);
     Latitude_left = str2num(split_result(1));
     Longitude_left = str2num(split_result(2));
     Height_left = str2num(split_result(3));

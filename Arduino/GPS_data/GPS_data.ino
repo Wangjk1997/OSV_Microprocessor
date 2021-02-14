@@ -1,20 +1,20 @@
 #include <TinyGPS++.h>
+#include "Tools.h"
 
-//A modification here not softwareSerial and 9600 baud
-static const uint32_t GPSBaud = 38400;
-
-// The TinyGPS++ object
 TinyGPSPlus gps_left;
 TinyGPSPlus gps_right;
-//position acquired by GPS stored in Arduino
+
 double Latitude_left = 0;
 double Longitude_left = 0;
 double Height_left = 0;
 double Latitude_right = 0;
 double Longitude_right = 0;
 double Height_right = 0;
-int a = 0;
-  
+String command_string = "";
+boolean stringComplete = false;
+int motor_control_value[6];
+
+
 void setup()
 {
   Serial.begin(9600);
@@ -22,10 +22,24 @@ void setup()
   Serial1.begin(GPSBaud);
   //Serial2 for gps_right
   Serial2.begin(GPSBaud);
+  pinMode(PWMA,OUTPUT);
+  pinMode(DIRA,OUTPUT);
+  pinMode(PWMB,OUTPUT);
+  pinMode(DIRB,OUTPUT);
+  pinMode(PWMC,OUTPUT);
+  pinMode(DIRC,OUTPUT);
+  pinMode(PWMD,OUTPUT);
+  pinMode(DIRD,OUTPUT);
+  pinMode(PWME,OUTPUT);
+  pinMode(DIRE,OUTPUT);
+  pinMode(PWMF,OUTPUT);
+  pinMode(DIRF,OUTPUT);
+  command_string.reserve(200);
 }
 
 void loop()
 {
+  // Updating GPS location
   if (Serial1.available() > 0)
   {
     if (gps_left.encode(Serial1.read()))
@@ -36,8 +50,8 @@ void loop()
         Longitude_left = gps_left.location.lng();
         Height_left = gps_left.altitude.meters();
         }
-    }
-    
+     }
+  }
   if (Serial2.available() > 0)
   {
     if (gps_right.encode(Serial2.read()))
@@ -50,21 +64,37 @@ void loop()
         }
       }
     }
-  if (Serial.available() > 0)
-  {
-    a = Serial.read();
-    Serial.print(Latitude_left);
-    Serial.print(" ");
-    Serial.print(Longitude_left);
-    Serial.print(" ");
-    Serial.print(Height_left);
-    Serial.print(" ");
-    Serial.print(Latitude_right);
-    Serial.print(" ");
-    Serial.print(Longitude_right);
-    Serial.print(" ");
-    Serial.print(Height_right);
-    Serial.write(13);
-    Serial.write(10);
-    }
+
+//   Receiving motor control command from matlab and send GPS location to matlab
+    if(stringComplete)
+    {
+      send_gps_location(Latitude_left, Longitude_left, Height_left, Latitude_right, Longitude_right, Height_right, accuracy_String);
+      for(int index = 0; index < 6; index++)
+      { 
+        String subCommandString;
+        subCommandString = getPart(index + 2,command_string,',');
+        char buff[subCommandString.length()+1];
+        subCommandString.toCharArray(buff,subCommandString.length()+1);
+        motor_control_value[index] = atoi(buff);
+        m_set(index,motor_control_value[index]);
+        }
+      //Serial.print(command_string);
+      command_string = "";
+      stringComplete = false;
+      }
+ }
+
+void serialEvent() 
+{
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read(); 
+    // add it to the inputString:
+    command_string += inChar;
+    // if the incoming character is a newline, set a flag
+    // so the main loop can do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    } 
+  }
 }

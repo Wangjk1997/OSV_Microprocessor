@@ -1,20 +1,17 @@
 clear all
+% add path
+addpath('.\tools');
+
 % configuration
 port = serialport('COM3',9600);
-configureTerminator(port,"CR/LF");
-flush(port);
+duration = 0.2;
 
-
-configureCallback(port,"terminator",@readData);
-pause(10)
-configureCallback(port,"off");
-
-function readData(src, ~)
-persistent i;
-if isempty(i)
-        i = 0;
+for i = 1:100
+    if (mod(i,5) ==0)
+        i
+        writeline(port, '$01,SETM,100,100,100,150,100,255');
+        raw_gps_data = readline(port)
+    end
+    pause(0.2)
 end
-data = readline(src)
-i = i+1;
 
-end
