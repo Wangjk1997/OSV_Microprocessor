@@ -1,17 +1,21 @@
-clear all
+% clear all
 % add path
 addpath('.\tools');
-
+addpath('.\eventHandler');
 % configuration
-port = serialport('COM3',9600);
-duration = 0.2;
+% global port;
+global duration;
 
-for i = 1:100
-    if (mod(i,5) ==0)
-        i
-        writeline(port, '$01,SETM,100,100,100,150,100,255');
-        raw_gps_data = readline(port)
-    end
-    pause(0.2)
-end
+% port = serialport('COM3',9600);
+duration = 0.2;
+time = 10;
+
+t = timer;
+t.ExecutionMode = 'fixedRate';
+t.Period = 0.2;
+t.TasksToExecute = time/duration;
+t.TimerFcn = @event_handler;
+start(t);
+
+
 

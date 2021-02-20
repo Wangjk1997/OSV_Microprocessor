@@ -1,4 +1,5 @@
 #include <TinyGPS++.h>
+#include <Servo.h>
 #include "Tools.h"
 
 TinyGPSPlus gps_left;

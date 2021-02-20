@@ -13,7 +13,7 @@ classdef RigidBodyState
         q;
         duration; %this should be changed if the samlping frequency is different;
     end
-    properties(Constant)
+    properties(Constant) 
         r_gb_b = [0,0,0.09705]';
         p_ln_n = zeros(3,1);
         R_ln = [[1,0,0];[0,0,1];[0,-1,0]];
