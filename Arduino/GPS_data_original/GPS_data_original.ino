@@ -4,14 +4,16 @@ char input1;
 char input2;
 String rawData1 = "";
 String rawData2 = "";
+String buff1 = "";
+String buff2 = "";
 boolean flag1 = false;
 boolean flag2 = false;
-double Latitude_left = 0;
-double Longitude_left = 0;
-double Height_left = 0;
-double Latitude_right = 0;
-double Longitude_right = 0;
-double Height_right = 0;
+//double Latitude_left = 0;
+//double Longitude_left = 0;
+//double Height_left = 0;
+//double Latitude_right = 0;
+//double Longitude_right = 0;
+//double Height_right = 0;
 String command_string = "";
 boolean stringComplete = false;
 //int motor_control_value[6];
@@ -45,17 +47,17 @@ void loop() {
           }
         else
         {
-          rawData1 += input1;
-          Serial.print(rawData1);
-          String string_Latitude_left;
-          string_Latitude_left = getPart(3,rawData1,' ');
-          Latitude_left = string_Latitude_left.toDouble();
-          String string_Longitude_left;
-          string_Longitude_left = getPart(4,rawData1,' ');
-          Longitude_left = string_Longitude_left.toDouble();
-          String string_Height_left;
-          string_Height_left = getPart(5,rawData1,' ');
-          Height_left = string_Height_left.toDouble();
+          buff1 = rawData1;
+          Serial.print(buff1);
+//          String string_Latitude_left;
+//          string_Latitude_left = getPart(3,rawData1,' ');
+//          Latitude_left = string_Latitude_left.toDouble();
+//          String string_Longitude_left;
+//          string_Longitude_left = getPart(4,rawData1,' ');
+//          Longitude_left = string_Longitude_left.toDouble();
+//          String string_Height_left;
+//          string_Height_left = getPart(5,rawData1,' ');
+//          Height_left = string_Height_left.toDouble();
           rawData1 = "";
           }
        }
@@ -78,24 +80,25 @@ void loop() {
           }
         else
         {
-          rawData2 += input2;
-          Serial.print(rawData2);
-          String string_Latitude_right;
-          string_Latitude_right = getPart(3,rawData2,' ');
-          Latitude_right = string_Latitude_right.toDouble();
-          String string_Longitude_right;
-          string_Longitude_right = getPart(4,rawData2,' ');
-          Longitude_right = string_Longitude_right.toDouble();
-          String string_Height_right;
-          string_Height_right = getPart(5,rawData2,' ');
-          Height_right = string_Height_right.toDouble();
+          buff2 = rawData2;
+          Serial.println(buff2);
+//          String string_Latitude_right;
+//          string_Latitude_right = getPart(3,rawData2,' ');
+//          Latitude_right = string_Latitude_right.toDouble();
+//          String string_Longitude_right;
+//          string_Longitude_right = getPart(4,rawData2,' ');
+//          Longitude_right = string_Longitude_right.toDouble();
+//          String string_Height_right;
+//          string_Height_right = getPart(5,rawData2,' ');
+//          Height_right = string_Height_right.toDouble();
           rawData2 = "";
           }
        }
     }
     if(stringComplete)
     {
-      send_gps_location(Latitude_left, Longitude_left, Height_left, Latitude_right, Longitude_right, Height_right, accuracy_String);
+      //send_gps_location(Latitude_left, Longitude_left, Height_left, Latitude_right, Longitude_right, Height_right, accuracy_String);
+      send_gps_data(buff1, buff2);
       for(int index = 0; index < 6; index++)
       { 
         String subCommandString;

@@ -16,6 +16,17 @@ void send_gps_location(double Latitude_left, double Longitude_left, double Heigh
     Serial.write(13);
     Serial.write(10);
   }
+  
+void send_gps_data(String buff1, String buff2)
+{
+  Serial.print(buff1);
+  Serial.print(" ");
+  Serial.print(buff2);
+  Serial.write(13);
+  Serial.write(10);
+  }
+
+
 
 void m_set(int motor,int value)
 {    

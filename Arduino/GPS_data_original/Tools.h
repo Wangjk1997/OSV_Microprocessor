@@ -20,6 +20,7 @@ static const int DIRF = 12;
 static const int COMMAND_EXPIRATION = 500;
 
 void send_gps_location(double Latitude_left, double Longitude_left, double Height_left, double Latitude_right, double Longitude_right, double Height_right, int accuracy_String);
+void send_gps_data(String buff1, String buff2);
 void m_set(int motor,int value);
 int command_process(String command_string, int index);
 String getPart(int i , String s, char dlm);
