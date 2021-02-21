@@ -18,7 +18,7 @@ int motor_control_value[6];
 
 void setup()
 {
-  Serial.begin(230400);
+  Serial.begin(9600);
   //Serial1 for gps_left
   Serial1.begin(GPSBaud);
   //Serial2 for gps_right
@@ -47,8 +47,10 @@ void loop()
     { 
       if (gps_left.location.isValid())
       {
-        Latitude_left = gps_left.location.lat();
-        Longitude_left = gps_left.location.lng();
+//        Latitude_left = gps_left.location.lat();
+//        Longitude_left = gps_left.location.lng();
+        Latitude_left = gps_left.location.rawLat().deg;
+        Longitude_left = gps_left.location.rawLng().deg;
         Height_left = gps_left.altitude.meters();
         }
      }

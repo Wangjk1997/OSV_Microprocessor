@@ -1,5 +1,7 @@
 static const uint32_t GPSBaud = 38400;
-String pos;
+char pos;
+char rawData[200];
+int index = 0;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(230400);
@@ -7,9 +9,18 @@ void setup() {
 }
 
 void loop() {
-  if(Serial1.available() > 0)
+  while(Serial1.available() > 0)
   {
     pos = Serial1.read();
-    Serial.println(pos);
+    if (pos == '%')
+    {
+      Serial.println(rawData);
+      index = 0;
+      }
+    else
+    {
+      rawData[index] = pos;
+      index++;
+      }
     }
 }
