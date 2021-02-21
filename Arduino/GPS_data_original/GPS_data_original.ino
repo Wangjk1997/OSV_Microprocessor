@@ -48,7 +48,7 @@ void loop() {
         else
         {
           buff1 = rawData1;
-          Serial.print(buff1);
+          //Serial.print(buff1);
 //          String string_Latitude_left;
 //          string_Latitude_left = getPart(3,rawData1,' ');
 //          Latitude_left = string_Latitude_left.toDouble();
@@ -81,7 +81,7 @@ void loop() {
         else
         {
           buff2 = rawData2;
-          Serial.println(buff2);
+          //Serial.println(buff2);
 //          String string_Latitude_right;
 //          string_Latitude_right = getPart(3,rawData2,' ');
 //          Latitude_right = string_Latitude_right.toDouble();
