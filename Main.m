@@ -1,12 +1,14 @@
-% clear all
+clear all
 % add path
 addpath('.\tools');
 addpath('.\eventHandler');
 % configuration
-% global port;
 global duration;
+global stateHistory;
+global rawdataHistory;
 
-% port = serialport('COM3',9600);
+stateHistory = [];
+rawdataHistory = [];
 duration = 0.2;
 time = 10;
 

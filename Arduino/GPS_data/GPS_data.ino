@@ -5,12 +5,12 @@
 TinyGPSPlus gps_left;
 TinyGPSPlus gps_right;
 
-double Latitude_left = 0;
-double Longitude_left = 0;
-double Height_left = 0;
-double Latitude_right = 0;
-double Longitude_right = 0;
-double Height_right = 0;
+double Latitude_left = 0.2345353452525;
+double Longitude_left = 0.324524626426424;
+double Height_left = 0.23452462642677425;
+double Latitude_right = 0.35245252452452445;
+double Longitude_right = 0.4223452757452;
+double Height_right = 0.2452642627245;
 String command_string = "";
 boolean stringComplete = false;
 int motor_control_value[6];
@@ -18,7 +18,7 @@ int motor_control_value[6];
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(230400);
   //Serial1 for gps_left
   Serial1.begin(GPSBaud);
   //Serial2 for gps_right

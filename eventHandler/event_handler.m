@@ -1,6 +1,9 @@
 function event_handler(~,~)
-    global port;
+    global duration;
+    global stateHistory;
+    global rawdataHistory;
     
+    persistent port;
     persistent currentState;
     persistent pid_px_gn_n;
     persistent pid_py_gn_n;
@@ -10,14 +13,19 @@ function event_handler(~,~)
     persistent ref_yaw;
     persistent animation_frame_left;
     persistent animation_frame_right;
-    
+    persistent command_string;
     
     %Sending command and receiving GPS data
-    command_string = '$01,SETM,255,255,255,255,255,255';
+    %Initialized first command
+    if(isempty(command_string))
+        command_string = '$01,SETM,255,255,255,255,255,255';
+        port = serialport("COM3",230400);
+        return;
+    end
     writeline(port, command_string);
     raw_gps_data = readline(port);
-%     [px_left, py_left, pz_left, px_right, py_right, pz_right] = location(raw_gps_data);
-    position = location(raw_gps_data)
+    rawdataHistory = [rawdataHistory; raw_gps_data];
+    position = location(raw_gps_data);
     px_left = position(1);
     py_left = position(2);
     pz_left = position(3);
@@ -26,13 +34,19 @@ function event_handler(~,~)
     pz_right = position(6);
     disp(datetime(now,'ConvertFrom','datenum'));
     
-    if(isempty(animation_frame_left))
-%         figure(1)
+    if(isempty(currentState))
+        currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 5);
         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 5);
-        axis([-10,10,-10,10]);
-        xlim manual;
+%         axis([-10,10,-10,10]);
+%         xlim manual;
+        return;
     end
+    %update rigidbody state
+    currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right, currentState);
+    stateHistory = [stateHistory, currentState];
+    
+    % plot real time positions
     addpoints(animation_frame_left, px_left, py_left);
     addpoints(animation_frame_right, px_right, py_right);
     drawnow;

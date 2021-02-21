@@ -2,7 +2,7 @@
 #define TOOLS_H_
 //Constants initialization
 static const uint32_t GPSBaud = 38400;
-static const int accuracy_String = 3;
+static const int accuracy_String = 10;
 
 static const int PWMA = 3;
 static const int DIRA = 2;

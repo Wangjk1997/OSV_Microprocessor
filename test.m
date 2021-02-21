@@ -16,4 +16,7 @@ plot(currentstate.p_bn_n(1),currentstate.p_bn_n(2),'*');
 currentstate.psi/pi*180
 currentstate.R_bn
 currentstate.p_bn_b
+
+state = currentstate
+history = [state, currentstate]
 % currentstate.psi
