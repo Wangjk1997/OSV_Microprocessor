@@ -47,10 +47,8 @@ void loop()
     { 
       if (gps_left.location.isValid())
       {
-//        Latitude_left = gps_left.location.lat();
-//        Longitude_left = gps_left.location.lng();
-        Latitude_left = gps_left.location.rawLat().deg;
-        Longitude_left = gps_left.location.rawLng().deg;
+        Latitude_left = gps_left.location.lat();
+        Longitude_left = gps_left.location.lng();
         Height_left = gps_left.altitude.meters();
         }
      }
