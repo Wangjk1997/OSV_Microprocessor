@@ -9,7 +9,7 @@ void setup() {
 void loop() {
   if(Serial1.available() > 0)
   {
-    pos = Serial1.readString();
+    pos = Serial1.read();
     Serial.println(pos);
     }
 }
