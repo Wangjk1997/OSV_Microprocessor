@@ -32,14 +32,14 @@ function event_handler(~,~)
     px_right = position(4);
     py_right = position(5);
     pz_right = position(6);
-    disp(datetime(now,'ConvertFrom','datenum'));
+%     disp(datetime(now,'ConvertFrom','datenum'));
     
     if(isempty(currentState))
         currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
-        animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 5);
-        animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 5);
-%         axis([-10,10,-10,10]);
-%         xlim manual;
+        animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
+        animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
+        axis([-3,3,-3,3]);
+        xlim manual;
         return;
     end
     %update rigidbody state
