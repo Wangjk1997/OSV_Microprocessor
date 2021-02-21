@@ -12,15 +12,6 @@ void loop() {
   while(Serial1.available() > 0)
   {
     pos = Serial1.read();
-    if (pos == '%')
-    {
-      Serial.println(rawData);
-      index = 0;
-      }
-    else
-    {
-      rawData[index] = pos;
-      index++;
-      }
-    }
+    Serial.print(pos);
+  }
 }
