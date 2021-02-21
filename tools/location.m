@@ -8,12 +8,12 @@ function output = location(gps_data)
     persistent wgs84;
     
     split_result = strsplit(gps_data);
-    Latitude_left = str2double(split_result(1));
-    Longitude_left = str2double(split_result(2));
-    Height_left = str2double(split_result(3));
-    Latitude_right = str2double(split_result(4));
-    Longitude_right = str2double(split_result(5));
-    Height_right = str2double(split_result(6));
+    Latitude_left = str2double(split_result(3));
+    Longitude_left = str2double(split_result(4));
+    Height_left = str2double(split_result(5));
+    Latitude_right = str2double(split_result(18));
+    Longitude_right = str2double(split_result(19));
+    Height_right = str2double(split_result(20));
     
     if (isempty(Latitude_left_base))
         Latitude_left_base = Latitude_left;
@@ -29,8 +29,8 @@ function output = location(gps_data)
     Latitude_left_base;
     Longitude_left_base;
     Height_left_base;
-    [x_left, y_left, z_left] = geodetic2ned(Latitude_left,Longitude_left,Height_left,Latitude_left_base,Longitude_left_base,Height_left_base,wgs84)
-    [x_right, y_right, z_right] = geodetic2ned(Latitude_right,Longitude_right,Height_right,Latitude_left_base,Longitude_left_base,Height_left_base,wgs84)
+    [x_left, y_left, z_left] = geodetic2ned(Latitude_left,Longitude_left,Height_left,Latitude_left_base,Longitude_left_base,Height_left_base,wgs84);
+    [x_right, y_right, z_right] = geodetic2ned(Latitude_right,Longitude_right,Height_right,Latitude_left_base,Longitude_left_base,Height_left_base,wgs84);
     output = [x_left, y_left, z_left, x_right, y_right, z_right];
 end
 
