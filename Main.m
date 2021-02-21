@@ -10,7 +10,7 @@ global rawdataHistory;
 stateHistory = [];
 rawdataHistory = [];
 duration = 0.2;
-time = 50;
+time = 80;
 
 t = timer;
 t.ExecutionMode = 'fixedRate';
