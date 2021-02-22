@@ -40,6 +40,8 @@ function event_handler_test(~,~)
         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
         axis([-3,3,-3,3]);
         xlim manual;
+        xlabel('North');
+        ylabel('East');
         return;
     end
     %update rigidbody state
