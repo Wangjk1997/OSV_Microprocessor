@@ -28,7 +28,8 @@ function event_handler(~,~)
     writeline(port, command_string);
     raw_gps_data = readline(port);
     rawdataHistory = [rawdataHistory; raw_gps_data];
-    position = location(raw_gps_data);
+    position = location(raw_gps_data, 1);
+%     position = location_original(raw_gps_data);
     px_left = position(1);
     py_left = position(2);
     pz_left = position(3);
@@ -40,7 +41,7 @@ function event_handler(~,~)
         currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
-        axis([-3,3,-3,3]);
+        axis([-5,5,-5,5]);
         xlim manual;
         return;
     end
