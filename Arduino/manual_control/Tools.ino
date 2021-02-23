@@ -1,14 +1,5 @@
 #include "Tools.h"
   
-void send_gps_data(String buff1, String buff2)
-{
-  Serial.print(buff1);
-  Serial.print(" ");
-  Serial.print(buff2);
-  Serial.write(13);
-  Serial.write(10);
-  }
-
 void m_set(int motor,int value){   
   //if(value<0  ){value=0;} 
   //if(value>511){value=511;}

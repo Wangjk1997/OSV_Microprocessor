@@ -1,5 +1,5 @@
 #include "Tools.h"
-
+#include <Servo.h>
 char input1;
 char input2;
 String rawData1 = "";
@@ -8,15 +8,10 @@ String buff1 = "";
 String buff2 = "";
 boolean flag1 = false;
 boolean flag2 = false;
-//double Latitude_left = 0;
-//double Longitude_left = 0;
-//double Height_left = 0;
-//double Latitude_right = 0;
-//double Longitude_right = 0;
-//double Height_right = 0;
 String command_string = "";
 boolean stringComplete = false;
-//int motor_control_value[6];
+Servo s0, s1, s2, s3; //4 servos in current phase
+int motor_control_value[6];
 
 
 void setup() {
@@ -26,6 +21,10 @@ void setup() {
   rawData1.reserve(200);
   rawData2.reserve(200);
   command_string.reserve(200);
+  s0.attach(MOTOR0_PIN);
+  s1.attach(MOTOR1_PIN);
+  s2.attach(MOTOR2_PIN);
+  s3.attach(MOTOR3_PIN);
 }
 
 void loop() {
@@ -48,16 +47,7 @@ void loop() {
         else
         {
           buff1 = rawData1;
-          //Serial.print(buff1);
-//          String string_Latitude_left;
-//          string_Latitude_left = getPart(3,rawData1,' ');
-//          Latitude_left = string_Latitude_left.toDouble();
-//          String string_Longitude_left;
-//          string_Longitude_left = getPart(4,rawData1,' ');
-//          Longitude_left = string_Longitude_left.toDouble();
-//          String string_Height_left;
-//          string_Height_left = getPart(5,rawData1,' ');
-//          Height_left = string_Height_left.toDouble();
+          Serial.print(buff1);
           rawData1 = "";
           }
        }
@@ -81,16 +71,7 @@ void loop() {
         else
         {
           buff2 = rawData2;
-          //Serial.println(buff2);
-//          String string_Latitude_right;
-//          string_Latitude_right = getPart(3,rawData2,' ');
-//          Latitude_right = string_Latitude_right.toDouble();
-//          String string_Longitude_right;
-//          string_Longitude_right = getPart(4,rawData2,' ');
-//          Longitude_right = string_Longitude_right.toDouble();
-//          String string_Height_right;
-//          string_Height_right = getPart(5,rawData2,' ');
-//          Height_right = string_Height_right.toDouble();
+          Serial.println(buff2);
           rawData2 = "";
           }
        }
@@ -105,10 +86,9 @@ void loop() {
         subCommandString = getPart(index + 2,command_string,',');
         char buff[subCommandString.length()+1];
         subCommandString.toCharArray(buff,subCommandString.length()+1);
-//        motor_control_value[index] = atoi(buff);
-//        m_set(index,motor_control_value[index]);
+        motor_control_value[index] = atoi(buff);
+        m_set(index,motor_control_value[index]);
         }
-      //Serial.print(command_string);
       command_string = "";
       stringComplete = false;
       }

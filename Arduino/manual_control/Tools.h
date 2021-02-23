@@ -1,7 +1,6 @@
 #ifndef TOOLS_H_
 #define TOOLS_H_
 //Constants initialization
-static const uint32_t GPSBaud = 38400;
 static const int accuracy_String = 20;
 
 const int MOTOR0_PIN = 9;
@@ -11,7 +10,6 @@ const int MOTOR3_PIN = 6;
 
 static const int COMMAND_EXPIRATION = 500;
 
-void send_gps_data(String buff1, String buff2);
 void m_set(int motor,int value);
 String getPart(int i , String s, char dlm);
 #endif

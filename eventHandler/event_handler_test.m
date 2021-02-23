@@ -18,12 +18,12 @@ function event_handler_test(~,~)
     %Sending command and receiving GPS data
     %Initialized first command
     if(isempty(command_string))
-        command_string = '$01,SETM,255,255,255,255,255,255';
+        command_string = '$01,SETM,100,100,100,100,100,100';
         port = serialport("COM3",230400);
         return;
     end
     writeline(port, command_string);
-    raw_gps_data = readline(port)
+    raw_gps_data = readline(port);
     rawdataHistory = [rawdataHistory; raw_gps_data];
     position = location(raw_gps_data);
     px_left = position(1);
@@ -32,7 +32,6 @@ function event_handler_test(~,~)
     px_right = position(4);
     py_right = position(5);
     pz_right = position(6);
-%     disp(datetime(now,'ConvertFrom','datenum'));
     
     if(isempty(currentState))
         currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
@@ -42,6 +41,7 @@ function event_handler_test(~,~)
         xlim manual;
         return;
     end
+    
     %update rigidbody state
     currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right, currentState);
     stateHistory = [stateHistory, currentState];
