@@ -16,8 +16,8 @@ t = timer;
 t.ExecutionMode = 'fixedRate';
 t.Period = 0.2;
 t.TasksToExecute = time/duration;
-% t.TimerFcn = @event_handler;
-t.TimerFcn = @event_handler_test;
+t.TimerFcn = @event_handler;
+% t.TimerFcn = @event_handler_test;
 start(t);
 
 

@@ -18,28 +18,32 @@ function event_handler(~,~)
     %Sending command and receiving GPS data
     %Initialized first command
     if(isempty(command_string))
-        command_string = '$01,SETM,255,255,255,255,255,255';
+        command_string = '$01,SETM,355,355,355,355,355,355';
         port = serialport("COM3",230400);
         return;
     end
     writeline(port, command_string);
     raw_gps_data = readline(port);
     rawdataHistory = [rawdataHistory; raw_gps_data];
-    position = location(raw_gps_data);
+    position = location(raw_gps_data, 1)
+    
+%     position = location_original(raw_gps_data);
     px_left = position(1);
     py_left = position(2);
     pz_left = position(3);
     px_right = position(4);
     py_right = position(5);
     pz_right = position(6);
-%     disp(datetime(now,'ConvertFrom','datenum'));
     
     if(isempty(currentState))
         currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
-        axis([-3,3,-3,3]);
+        axis([-5,5,-5,5]);
+        axis equal;
         xlim manual;
+        xlabel('North');
+        ylabel('East');
         return;
     end
     %update rigidbody state
