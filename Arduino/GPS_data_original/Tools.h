@@ -2,7 +2,6 @@
 #define TOOLS_H_
 //Constants initialization
 static const uint32_t GPSBaud = 38400;
-static const int accuracy_String = 20;
 
 const int MOTOR0_PIN = 9;
 const int MOTOR1_PIN = 10;

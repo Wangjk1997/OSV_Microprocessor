@@ -6,13 +6,17 @@ String rawData1 = "";
 String rawData2 = "";
 String buff1 = "";
 String buff2 = "";
+//String rawData1 = "2021/02/23 07:14:23.829   33.777942178  -84.408359553   286.2368   5  11   2.1005   2.8051   6.4849   0.0000   0.0000   0.0000   0.00    0.0";
+//String rawData2 = "2021/02/23 07:14:23.900   33.777958640  -84.408402984   290.6932   5  10   2.1052   3.0819   7.1420   0.0000   0.0000   0.0000   0.00    0.0";
+//String buff1 = "2021/02/23 07:14:23.829   33.777942178  -84.408359553   286.2368   5  11   2.1005   2.8051   6.4849   0.0000   0.0000   0.0000   0.00    0.0";
+//String buff2 = "2021/02/23 07:14:23.900   33.777958640  -84.408402984   290.6932   5  10   2.1052   3.0819   7.1420   0.0000   0.0000   0.0000   0.00    0.0";
+
 boolean flag1 = false;
 boolean flag2 = false;
 String command_string = "";
 boolean stringComplete = false;
-Servo s0, s1, s2, s3; //4 servos in current phase
 int motor_control_value[6];
-
+Servo s0, s1, s2, s3;
 
 void setup() {
   Serial.begin(230400);
@@ -47,7 +51,6 @@ void loop() {
         else
         {
           buff1 = rawData1;
-          Serial.print(buff1);
           rawData1 = "";
           }
        }
@@ -71,14 +74,12 @@ void loop() {
         else
         {
           buff2 = rawData2;
-          Serial.println(buff2);
           rawData2 = "";
           }
        }
     }
     if(stringComplete)
     {
-      //send_gps_location(Latitude_left, Longitude_left, Height_left, Latitude_right, Longitude_right, Height_right, accuracy_String);
       send_gps_data(buff1, buff2);
       for(int index = 0; index < 6; index++)
       { 
@@ -89,6 +90,7 @@ void loop() {
         motor_control_value[index] = atoi(buff);
         m_set(index,motor_control_value[index]);
         }
+      //Serial.print(command_string);
       command_string = "";
       stringComplete = false;
       }
