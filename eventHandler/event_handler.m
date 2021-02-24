@@ -5,18 +5,18 @@ function event_handler(~,~)
     
     persistent port;
     persistent currentState;
-    persistent pid_px_gn_n;
-    persistent pid_py_gn_n;
+    persistent pid_px_bn_n;
+    persistent pid_py_bn_n;
     persistent pid_yaw;
-    persistent ref_px_gn_n;
-    persistent ref_py_gn_n;
+    persistent ref_px_bn_n;
+    persistent ref_py_bn_n;
     persistent ref_yaw;
     persistent animation_frame_left;
     persistent animation_frame_right;
     persistent command_string;
     
-    %Sending command and receiving GPS data
-    %Initialized first command
+    %send command and receivie GPS data
+    %initialize first command
     if(isempty(command_string))
         command_string = '$01,SETM,355,355,355,355,355,355';
         port = serialport("COM3",230400);
@@ -37,6 +37,29 @@ function event_handler(~,~)
     
     if(isempty(currentState))
         currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
+        %initialize reference
+        ref_px_bn_n = currentState.p_bn_n(1);
+        ref_py_bn_n = currentState.p_bn_n(2);
+        ref_yaw = currentState.psi;
+        
+        %initialize PID parameters and controllers
+        kp_px_bn_n = 0.2;
+        ki_px_bn_n = 0;
+        kd_px_bn_n = 0;
+        
+        kp_py_bn_n = 0.2;
+        ki_py_bn_n = 0;
+        kd_py_bn_n = 0;
+        
+        kp_yaw = 0.0089/50;
+        ki_yaw = 0;
+        kd_yaw = 0.01/50;
+        
+        pid_px_bn_n = PIDController(kp_px_bn_n, ki_px_bn_n, kd_px_bn_n, duration, 0.0594*0.8*sqrt(2), -0.0594*0.8*sqrt(2));
+        pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.0594*0.8*sqrt(2), -0.0594*0.8*sqrt(2));
+        pid_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw,duration, 0.0594*2*0.053*0.2, -0.0594*2*0.053*0.2);
+      
+        % plotting settings
         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
         axis([-5,5,-5,5]);
@@ -46,9 +69,24 @@ function event_handler(~,~)
         ylabel('East');
         return;
     end
-    %update rigidbody state
+    
+    % update rigidbody state
     currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right, currentState);
     stateHistory = [stateHistory, currentState];
+    
+    % updata PID Controller
+    [pid_px_bn_n, ux] = pid_px_bn_n.calculate(ref_px_bn_n - currentState.p_bn_n(1));
+    [pid_py_bn_n, uy] = pid_py_bn_n.calculate(ref_py_bn_n - currentState.p_bn_n(2));
+    [pid_yaw, tz] = pid_yaw.calculate((ref_yaw - currentState.psi) * 180/pi);
+    
+    % convert force and torque to cmd
+    user_tau=[ux;uy;uz;0;0;tz];
+    tau=actuation_vector_saturation(user_tau);
+    f = mixer_positive(tau);
+    duty_cycles=thrust2dutyCycle(f);
+    duty_cycles=duty_cycle_saturation(duty_cycles);
+    duty_cycles = direction_and_order_mapping(duty_cycles);
+    command_string = convertCMD(duty_cycles);
     
     % plot real time positions
     addpoints(animation_frame_left, px_left, py_left);
