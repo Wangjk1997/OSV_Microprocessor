@@ -9,7 +9,7 @@ function cmd = convertCMD(duty_cycles)
 %       --d6: duty cycle count required for motor 6, -1<d6<1
 % OUTPUT: cmd -- a string in format: '$01,SETM,255,255,255,255,255,255'
 %       each value should be a integer belong to [0, 511].
-    cmd = '$01,SETM';
+    cmd = "$01,SETM";
     for i = 1:6
         motor_value = floor(duty_cycles(i) * 256 + 256);
         cmd = cmd + ',' + motor_value;

@@ -31,7 +31,7 @@ function position = location(gps_data, distance)
         Longitude_right_base = Longitude_right;
         Height_right_base = Height_right;
         wgs84 = wgs84Ellipsoid;
-        position = [0, 0, 0, 0, 0, 0];
+        position = [0, 0, 0, distance, 0, 0];
         return
     end
     [x_left, y_left, z_left] = geodetic2ned(Latitude_left,Longitude_left,Height_left,Latitude_left_base,Longitude_left_base,Height_left_base,wgs84);

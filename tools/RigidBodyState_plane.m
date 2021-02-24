@@ -30,7 +30,7 @@ classdef RigidBodyState_plane
                 obj.p_bn_n = (obj.p_left + obj.p_right)/2;
                 obj.v_bn_b = zeros(2,1);
                 obj.v_bn_n = zeros(2,1);
-                obj.psi = atan2((obj.p_left(2) - obj.p_right(2)), (obj.p_left(1) - obj.p_right(1)));
+                obj.psi = atan2((obj.p_right(2) - obj.p_left(2)), (obj.p_right(1) - obj.p_left(1)));
                 obj.psi_dot = 0;
                 obj.R_bn = [cos(obj.psi), -sin(obj.psi); sin(obj.psi), cos(obj.psi)];
                 obj.p_bn_b = obj.R_bn' * obj.p_bn_n;
@@ -40,7 +40,7 @@ classdef RigidBodyState_plane
                 obj.p_right = [px_right, py_right]';
                 obj.p_bn_n = (obj.p_left + obj.p_right)/2;
                 obj.duration = duration;
-                obj.psi = atan2((obj.p_left(2) - obj.p_right(2)), (obj.p_left(1) - obj.p_right(1)));
+                obj.psi = atan2((obj.p_right(2) - obj.p_left(2)), (obj.p_right(1) - obj.p_left(1)));
                 obj.R_bn = [cos(obj.psi), -sin(obj.psi); sin(obj.psi), cos(obj.psi)];
                 obj.p_bn_b = obj.R_bn' * obj.p_bn_n;
                 obj.v_bn_n = 1 / obj.duration * (obj.p_bn_n - previousState.p_bn_n);
