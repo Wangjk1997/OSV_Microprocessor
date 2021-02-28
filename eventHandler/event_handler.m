@@ -86,13 +86,12 @@ function event_handler(~,~)
     currentState.psi;
     
     % convert force and torque to cmd
-    user_tau=[ux;uy;0;0;0;tz];
-    tau=actuation_vector_saturation(user_tau);
+    user_tau = [ux;uy;0;0;0;tz];
+    tau = actuation_vector_saturation(user_tau);
     f = mixer_positive(tau);
-    duty_cycles=thrust2dutyCycle(f);
-    duty_cycles=duty_cycle_saturation(duty_cycles);
-    duty_cycles = direction_and_order_mapping(duty_cycles);
-    command_string = convertCMD(duty_cycles)
+    duty_cycles = thrust2dutyCycle(f);
+    duty_cycles = duty_cycle_saturation(duty_cycles);
+    command_string = convertCMD(duty_cycles);
 %     
     % plot real time positions
     addpoints(animation_frame_left, px_left, py_left);
