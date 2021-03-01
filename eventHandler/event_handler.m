@@ -41,7 +41,7 @@ function event_handler(~,~)
         currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
         %initialize reference
         ref_px_bn_n = currentState.p_bn_n(1);
-        ref_py_bn_n = currentState.p_bn_n(2) + 2;
+        ref_py_bn_n = currentState.p_bn_n(2);
         ref_yaw = currentState.psi;
 %         ref_px_bn_n = 0.5;
 %         ref_py_bn_n = 1;
@@ -90,7 +90,7 @@ function event_handler(~,~)
     % convert force and torque to cmd
     user_tau = [ux;uy;0;0;0;tz];
     tau = actuation_vector_saturation(user_tau);
-    f = mixer_positive(tau);
+    f = mixer_positive(tau)
     duty_cycles = thrust2dutyCycle(f);
     duty_cycles = duty_cycle_saturation(duty_cycles);
     command_string = convertCMD(duty_cycles);
