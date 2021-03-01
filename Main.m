@@ -4,12 +4,16 @@ addpath('.\tools');
 addpath('.\eventHandler');
 % configuration
 global duration;
-global stateHistory;
+global pxHistory;
+global pyHistory;
+global yawHistory;
 global rawdataHistory;
 global fHistory;
 global duty_cyclesHistory;
 
-stateHistory = [];
+pxHistory = [];
+pyHistory = [];
+yawHistory = [];
 rawdataHistory = [];
 fHistory = [];
 duty_cyclesHistory = [];
@@ -22,12 +26,8 @@ t.Period = duration;
 t.TasksToExecute = time/duration;
 t.TimerFcn = @event_handler;
 % t.TimerFcn = @event_handler_test;
+t.StopFcn = @save_workspace;
 start(t);
-
-tmp = clock;
-filename = ".\data\workspace" +num2str(tmp(2))+num2str(tmp(3))+num2str(tmp(4))+num2str(tmp(5));
-save(filename);
-disp('Control End' )
 
 
 

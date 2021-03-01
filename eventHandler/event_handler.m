@@ -1,6 +1,8 @@
 function event_handler(~,~)
     global duration;
-    global stateHistory;
+    global pxHistory;
+    global pyHistory;
+    global yawHistory;
     global rawdataHistory;
     global fHistory;
     global duty_cyclesHistory;
@@ -77,15 +79,14 @@ function event_handler(~,~)
     
     % update rigidbody state
     currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right, currentState);
-    stateHistory = [stateHistory, currentState];
     
     % updata PID Controller
     [pid_px_bn_n, ux] = pid_px_bn_n.calculate(ref_px_bn_n - currentState.p_bn_n(1));
     [pid_py_bn_n, uy] = pid_py_bn_n.calculate(ref_py_bn_n - currentState.p_bn_n(2));
     [pid_yaw, tz] = pid_yaw.calculate((ref_yaw - currentState.psi) * 180/pi);
-    X = currentState.p_bn_n(1);
-    Y = currentState.p_bn_n(2);
-    PSI = currentState.psi;
+    pxHistory = [pxHistory, currentState.p_bn_n(1)];
+    pyHistory = [pyHistory, currentState.p_bn_n(2)];
+    yawHistory = [yawHistory, currentState.psi];
     
     % convert force and torque to cmd
     user_tau = [ux;uy;0;0;0;tz];
