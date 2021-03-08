@@ -4,7 +4,6 @@ function event_handler(~,~)
     global pyHistory;
     global yawHistory;
     global rawdataHistory;
-    global fHistory;
     global duty_cyclesHistory;
     
     persistent port;
@@ -45,16 +44,16 @@ function event_handler(~,~)
         ref_px_bn_n = currentState.p_bn_n(1);
         ref_py_bn_n = currentState.p_bn_n(2);
         ref_yaw = currentState.psi;
-%         ref_px_bn_n = 0.5;
+        ref_px_bn_n = 0;
 %         ref_py_bn_n = 1;
-%         ref_yaw = 0;
+        ref_yaw = pi/3;
         
         %initialize PID parameters and controllers
-        kp_px_bn_n = 0.02;
+        kp_px_bn_n = 0.2;
         ki_px_bn_n = 0;
         kd_px_bn_n = 0;
         
-        kp_py_bn_n = 0.02;
+        kp_py_bn_n = 0.2;
         ki_py_bn_n = 0;
         kd_py_bn_n = 0;
         
@@ -62,9 +61,9 @@ function event_handler(~,~)
         ki_yaw = 0;
         kd_yaw = 0.01/50;
         
-        pid_px_bn_n = PIDController(kp_px_bn_n, ki_px_bn_n, kd_px_bn_n, duration, 0.0594*0.8*sqrt(2), -0.0594*0.8*sqrt(2));
-        pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.0594*0.8*sqrt(2), -0.0594*0.8*sqrt(2));
-        pid_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw,duration, 0.0594*2*0.053*0.2, -0.0594*2*0.053*0.2);
+        pid_px_bn_n = PIDController(kp_px_bn_n, ki_px_bn_n, kd_px_bn_n, duration, 0.8, -0.8);
+        pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.8, -0.8);
+        pid_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw,duration, 0.2, -0.2);
       
         % plotting settings
         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
@@ -81,22 +80,19 @@ function event_handler(~,~)
     currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right, currentState);
     
     % updata PID Controller
-    [pid_px_bn_n, ux] = pid_px_bn_n.calculate(ref_px_bn_n - currentState.p_bn_n(1));
-    [pid_py_bn_n, uy] = pid_py_bn_n.calculate(ref_py_bn_n - currentState.p_bn_n(2));
-    [pid_yaw, tz] = pid_yaw.calculate((ref_yaw - currentState.psi) * 180/pi);
+    [pid_px_bn_n, duty_px] = pid_px_bn_n.calculate(ref_px_bn_n - currentState.p_bn_n(1));
+    [pid_py_bn_n, duty_py] = pid_py_bn_n.calculate(ref_py_bn_n - currentState.p_bn_n(2));
+    [pid_yaw, duty_tz] = pid_yaw.calculate((ref_yaw - currentState.psi) * 180/pi);
     pxHistory = [pxHistory, currentState.p_bn_n(1)];
     pyHistory = [pyHistory, currentState.p_bn_n(2)];
     yawHistory = [yawHistory, currentState.psi];
     
     % convert force and torque to cmd
-    user_tau = [ux;uy;0;0;0;tz];
-    tau = actuation_vector_saturation(user_tau);
-    f = mixer_positive(tau)
-    duty_cycles = thrust2dutyCycle(f);
-    duty_cycles = duty_cycle_saturation(duty_cycles);
-    command_string = convertCMD(duty_cycles);
-    fHistory = [fHistory, f];
-    duty_cyclesHistory = [duty_cyclesHistory, duty_cycles];
+    duty_cycle_PID = [duty_px;duty_py;0;0;0;duty_tz];
+    duty_cycle = mixer_positive_dutyCycle(duty_cycle_PID);
+    duty_cycle = duty_cycle_saturation(duty_cycle);
+    command_string = convertCMD(duty_cycle)
+    duty_cyclesHistory = [duty_cyclesHistory, duty_cycle];
     
     
     % plot real time positions

@@ -8,7 +8,6 @@ global pxHistory;
 global pyHistory;
 global yawHistory;
 global rawdataHistory;
-global fHistory;
 global duty_cyclesHistory;
 
 pxHistory = [];
@@ -17,8 +16,8 @@ yawHistory = [];
 rawdataHistory = [];
 fHistory = [];
 duty_cyclesHistory = [];
-duration = 0.2;
-time = 35;
+duration = 0.1;
+time = 25;
 
 t = timer;
 t.ExecutionMode = 'fixedRate';
