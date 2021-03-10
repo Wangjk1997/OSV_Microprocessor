@@ -1,7 +1,8 @@
+leng = 347;
 figure(1)
-plot(0.2*(1:172), pxHistory)
+plot(0.2*(1:leng), pxHistory)
 hold on
-plot(0.2*(1:172), pyHistory)
+plot(0.2*(1:leng), pyHistory)
 xlabel('Time/s')
 ylabel('Position/m')
 title('P_{b/n}^n')
@@ -12,9 +13,9 @@ set(gcf,'units','points','position',[x0,y0,width,height])
 print('-dpng','-r300','IMG_position.png')
 
 figure(2)
-plot(0.2*(1:172), f_history(1,:))
+plot(0.2*(1:leng), duty_cyclesHistory(1,:))
 hold on
-plot(0.2*(1:172), f_history(2,:))
+plot(0.2*(1:leng), duty_cyclesHistory(2,:))
 xlabel('Time/s')
 ylabel('Duty Cycle')
 title('Duty Cycle')
@@ -23,7 +24,18 @@ set(gcf,'units','points','position',[x0,y0,width,height])
 print('-dpng','-r300','IMG_motor12.png')
 
 figure(3)
-plot(0.2*(1:172), yawHistory)
+plot(0.2*(1:leng), duty_cyclesHistory(3,:))
+hold on
+plot(0.2*(1:leng), duty_cyclesHistory(4,:))
+xlabel('Time/s')
+ylabel('Duty Cycle')
+title('Duty Cycle')
+legend({'f_3', 'f_4'})
+set(gcf,'units','points','position',[x0,y0,width,height])
+print('-dpng','-r300','IMG_motor34.png')
+
+figure(4)
+plot(0.2*(1:leng), yawHistory)
 xlabel('Time/s')
 ylabel('yaw/rad')
 title('Yaw Angle')

@@ -44,22 +44,25 @@ function event_handler(~,~)
         ref_px_bn_n = currentState.p_bn_n(1);
         ref_py_bn_n = currentState.p_bn_n(2);
         ref_yaw = currentState.psi;
-        ref_px_bn_n = 0;
+%         ref_px_bn_n = 0;
 %         ref_py_bn_n = 1;
-        ref_yaw = pi/3;
+%         ref_yaw = pi/3;
         
         %initialize PID parameters and controllers
-        kp_px_bn_n = 0.2;
+        kp_px_bn_n = 0;
         ki_px_bn_n = 0;
         kd_px_bn_n = 0;
         
-        kp_py_bn_n = 0.2;
+        kp_py_bn_n = 0;
         ki_py_bn_n = 0;
         kd_py_bn_n = 0;
         
-        kp_yaw = 0.0089/50;
+        kp_yaw = 0.089/50;
         ki_yaw = 0;
-        kd_yaw = 0.01/50;
+        kd_yaw = 0.009/50;
+%         kp_yaw = 0;
+%         ki_yaw = 0;
+%         kd_yaw = 0;
         
         pid_px_bn_n = PIDController(kp_px_bn_n, ki_px_bn_n, kd_px_bn_n, duration, 0.8, -0.8);
         pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.8, -0.8);

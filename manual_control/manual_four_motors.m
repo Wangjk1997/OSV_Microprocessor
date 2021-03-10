@@ -15,17 +15,17 @@ while(true)
   val = getkey;
   %For OSV
   if val == 119 %w
-      writeline(port,'$01,SETM,255,300,300,255,255,255');
+      writeline(port,'$01,SETM,255,265,265,255,255,255');
   elseif val == 115 %s
-      writeline(port,'$01,SETM,300,255,255,300,255,255');
+      writeline(port,'$01,SETM,265,255,255,265,255,255');
   elseif val == 97 %a
-      writeline(port,'$01,SETM,255,255,300,300,255,255');
+      writeline(port,'$01,SETM,255,255,265,265,255,255');
   elseif val == 100 %d
-      writeline(port,'$01,SETM,300,300,255,255,255,255');
+      writeline(port,'$01,SETM,265,265,255,255,255,255');
   elseif val == 113 %q
-      writeline(port,'$01,SETM,255,300,255,300,255,255');
+      writeline(port,'$01,SETM,255,265,255,265,255,255');
   elseif val == 101 %e
-      writeline(port,'$01,SETM,300,255,300,255,255,255');
+      writeline(port,'$01,SETM,265,255,265,255,255,255');
   elseif val == 99 % c close serial port
       clear port
       break;
