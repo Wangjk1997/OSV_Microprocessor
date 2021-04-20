@@ -3,7 +3,7 @@
 
 Servo s0, s1, s2, s3; //4 servos in current phase
 int motor_control_value[6];
-String command_string = "$01,SETM,400,400,400,400,400,400";
+String command_string = "$01,SETM,255,255,255,255,255,255";
 boolean stringComplete = false;
 
 void setup() {

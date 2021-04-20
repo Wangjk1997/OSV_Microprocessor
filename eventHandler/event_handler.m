@@ -5,8 +5,8 @@ function event_handler(~,~)
     global yawHistory;
     global rawdataHistory;
     global duty_cyclesHistory;
+    global port;
     
-    persistent port;
     persistent currentState;
     persistent pid_px_bn_n;
     persistent pid_py_bn_n;
@@ -28,7 +28,7 @@ function event_handler(~,~)
     writeline(port, command_string);
     raw_gps_data = readline(port);
     rawdataHistory = [rawdataHistory; raw_gps_data];
-    position = location(raw_gps_data, 1);
+    position = location(raw_gps_data, 0.57);
     
 %     position = location_original(raw_gps_data);
     px_left = position(1);
@@ -49,13 +49,13 @@ function event_handler(~,~)
 %         ref_yaw = pi/3;
         
         %initialize PID parameters and controllers
-        kp_px_bn_n = 0;
+        kp_px_bn_n = 0.2;
         ki_px_bn_n = 0;
-        kd_px_bn_n = 0;
+        kd_px_bn_n = 0.2;
         
-        kp_py_bn_n = 0;
+        kp_py_bn_n = 0.2;
         ki_py_bn_n = 0;
-        kd_py_bn_n = 0;
+        kd_py_bn_n = 0.2;
         
         kp_yaw = 0.089/50;
         ki_yaw = 0;
@@ -64,8 +64,8 @@ function event_handler(~,~)
 %         ki_yaw = 0;
 %         kd_yaw = 0;
         
-        pid_px_bn_n = PIDController(kp_px_bn_n, ki_px_bn_n, kd_px_bn_n, duration, 0.8, -0.8);
-        pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.8, -0.8);
+        pid_px_bn_n = PIDController(kp_px_bn_n, ki_px_bn_n, kd_px_bn_n, duration, 0.4, -0.4);
+        pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.4, -0.4);
         pid_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw,duration, 0.2, -0.2);
       
         % plotting settings

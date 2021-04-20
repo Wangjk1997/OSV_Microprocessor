@@ -6,7 +6,7 @@ static const int accuracy_String = 20;
 const int MOTOR0_PIN = 9;
 const int MOTOR1_PIN = 10;
 const int MOTOR2_PIN = 11;
-const int MOTOR3_PIN = 6;
+const int MOTOR3_PIN = 8;
 
 static const int COMMAND_EXPIRATION = 500;
 
