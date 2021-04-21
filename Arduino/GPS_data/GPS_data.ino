@@ -1,75 +1,86 @@
-#include <TinyGPS++.h>
-#include <Servo.h>
 #include "Tools.h"
+#include <Servo.h>
+char input1;
+char input2;
+String rawData1 = "";
+String rawData2 = "";
+String buff1 = "";
+String buff2 = "";
+//String rawData1 = "2021/02/23 07:14:23.829   33.777942178  -84.408359553   286.2368   5  11   2.1005   2.8051   6.4849   0.0000   0.0000   0.0000   0.00    0.0";
+//String rawData2 = "2021/02/23 07:14:23.900   33.777958640  -84.408402984   290.6932   5  10   2.1052   3.0819   7.1420   0.0000   0.0000   0.0000   0.00    0.0";
+//String buff1 = "2021/02/23 07:14:23.829   33.777942178  -84.408359553   286.2368   5  11   2.1005   2.8051   6.4849   0.0000   0.0000   0.0000   0.00    0.0";
+//String buff2 = "2021/02/23 07:14:23.900   33.777958640  -84.408402984   290.6932   5  10   2.1052   3.0819   7.1420   0.0000   0.0000   0.0000   0.00    0.0";
 
-TinyGPSPlus gps_left;
-TinyGPSPlus gps_right;
-
-double Latitude_left = 0;
-double Longitude_left = 0;
-double Height_left = 0;
-double Latitude_right = 0;
-double Longitude_right = 0;
-double Height_right = 0;
+boolean flag1 = false;
+boolean flag2 = false;
 String command_string = "";
 boolean stringComplete = false;
 int motor_control_value[6];
+Servo s0, s1, s2, s3;
 
-
-void setup()
-{
-  Serial.begin(9600);
-  //Serial1 for gps_left
+void setup() {
+  Serial.begin(230400);
   Serial1.begin(GPSBaud);
-  //Serial2 for gps_right
   Serial2.begin(GPSBaud);
-  pinMode(PWMA,OUTPUT);
-  pinMode(DIRA,OUTPUT);
-  pinMode(PWMB,OUTPUT);
-  pinMode(DIRB,OUTPUT);
-  pinMode(PWMC,OUTPUT);
-  pinMode(DIRC,OUTPUT);
-  pinMode(PWMD,OUTPUT);
-  pinMode(DIRD,OUTPUT);
-  pinMode(PWME,OUTPUT);
-  pinMode(DIRE,OUTPUT);
-  pinMode(PWMF,OUTPUT);
-  pinMode(DIRF,OUTPUT);
+  rawData1.reserve(200);
+  rawData2.reserve(200);
   command_string.reserve(200);
+  s0.attach(MOTOR0_PIN);
+  s1.attach(MOTOR1_PIN);
+  s2.attach(MOTOR2_PIN);
+  s3.attach(MOTOR3_PIN);
 }
 
-void loop()
-{
-  // Updating GPS location
-  if (Serial1.available() > 0)
+void loop() {
+  if(Serial1.available() > 0)
   {
-    if (gps_left.encode(Serial1.read()))
-    { 
-      if (gps_left.location.isValid())
-      {
-        Latitude_left = gps_left.location.lat();
-        Longitude_left = gps_left.location.lng();
-        Height_left = gps_left.altitude.meters();
-        }
-     }
-  }
-  if (Serial2.available() > 0)
-  {
-    if (gps_right.encode(Serial2.read()))
+    input1 = Serial1.read();
+    if(input1 != '\n')
     {
-      if (gps_right.location.isValid())
-      {
-        Latitude_right = gps_right.location.lat();
-        Longitude_right = gps_right.location.lng();
-        Height_right = gps_right.altitude.meters();
-        }
+        if(flag1 == true)
+        {
+          rawData1 += input1;
+          }
       }
+    else
+    {
+        if(flag1 == false)
+        {
+          flag1 = true;
+          }
+        else
+        {
+          buff1 = rawData1;
+          rawData1 = "";
+          }
+       }
     }
-
-//   Receiving motor control command from matlab and send GPS location to matlab
+  if(Serial2.available() > 0)
+  {
+    input2 = Serial2.read();
+    if(input2 != '\n')
+    {
+        if(flag2 == true)
+        {
+          rawData2 += input2;
+          }
+      }
+    else
+    {
+        if(flag2 == false)
+        {
+          flag2 = true;
+          }
+        else
+        {
+          buff2 = rawData2;
+          rawData2 = "";
+          }
+       }
+    }
     if(stringComplete)
     {
-      send_gps_location(Latitude_left, Longitude_left, Height_left, Latitude_right, Longitude_right, Height_right, accuracy_String);
+      send_gps_data(buff1, buff2);
       for(int index = 0; index < 6; index++)
       { 
         String subCommandString;
@@ -83,7 +94,7 @@ void loop()
       command_string = "";
       stringComplete = false;
       }
- }
+}
 
 void serialEvent() 
 {

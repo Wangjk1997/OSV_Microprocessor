@@ -17,7 +17,7 @@ rawdataHistory = [];
 fHistory = [];
 duty_cyclesHistory = [];
 duration = 0.1;
-time = 35;
+time = 25;
 
 t = timer;
 t.ExecutionMode = 'fixedRate';
