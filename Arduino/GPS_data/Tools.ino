@@ -1,10 +1,12 @@
 #include "Tools.h"
   
-void send_gps_data(String buff1, String buff2)
+void send_data(String buff1, String buff2, String buff3)
 {
   Serial.print(buff1);
   Serial.print(" ");
   Serial.print(buff2);
+  Serial.print(" ");
+  Serial.print(buff3);
   Serial.write(13);
   Serial.write(10);
   }
@@ -61,3 +63,22 @@ String getPart(int i , String s, char dlm)
   }
   return s.substring(bndx,endx);
 }
+
+String IMU_data(Adafruit_BNO055 bno, int accuracy)
+{
+  String rawIMU = "";
+  imu::Vector<3> accelerometer = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  imu::Vector<3> gyroscope = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  imu::Vector<3> magnetometer = bno.getVector(Adafruit_BNO055::VECTOR_MAGNETOMETER);
+  String accx = String(accelerometer.x(), accuracy);
+  String accy = String(accelerometer.y(), accuracy);
+  String accz = String(accelerometer.z(), accuracy);
+  String gyrox = String(gyroscope.x(), accuracy);
+  String gyroy = String(gyroscope.y(), accuracy);
+  String gyroz = String(gyroscope.z(), accuracy);
+  String magx = String(magnetometer.x(), accuracy);
+  String magy = String(magnetometer.y(), accuracy);
+  String magz = String(magnetometer.z(), accuracy);
+  rawIMU = accx + " " + accy + " " + accz + " " + gyrox + " " + gyroy + " " + gyroz + " " + magx + " " + magy + " " + magz;
+  return rawIMU;
+  }

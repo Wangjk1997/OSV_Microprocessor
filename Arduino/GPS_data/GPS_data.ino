@@ -1,11 +1,14 @@
 #include "Tools.h"
-#include <Servo.h>
+
+
+Adafruit_BNO055 bno = Adafruit_BNO055(55);
 char input1;
 char input2;
 String rawData1 = "";
 String rawData2 = "";
 String buff1 = "";
 String buff2 = "";
+String rawIMU = "";
 //String rawData1 = "2021/02/23 07:14:23.829   33.777942178  -84.408359553   286.2368   5  11   2.1005   2.8051   6.4849   0.0000   0.0000   0.0000   0.00    0.0";
 //String rawData2 = "2021/02/23 07:14:23.900   33.777958640  -84.408402984   290.6932   5  10   2.1052   3.0819   7.1420   0.0000   0.0000   0.0000   0.00    0.0";
 //String buff1 = "2021/02/23 07:14:23.829   33.777942178  -84.408359553   286.2368   5  11   2.1005   2.8051   6.4849   0.0000   0.0000   0.0000   0.00    0.0";
@@ -29,6 +32,15 @@ void setup() {
   s1.attach(MOTOR1_PIN);
   s2.attach(MOTOR2_PIN);
   s3.attach(MOTOR3_PIN);
+  /* Initialize the IMU */
+  if(!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    while(1);
+  }
+  delay(1000);
+  bno.setExtCrystalUse(true);
 }
 
 void loop() {
@@ -78,7 +90,6 @@ void loop() {
           }
        }
     }
-
     while (Serial.available())
     {
       char inChar = (char)Serial.read();
@@ -91,7 +102,8 @@ void loop() {
     
     if(stringComplete)
     {
-      send_gps_data(buff1, buff2);
+      rawIMU = IMU_data(bno, 5);
+      send_data(buff1, buff2, rawIMU);
       for(int index = 0; index < 6; index++)
       { 
         String subCommandString;
