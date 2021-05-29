@@ -1,5 +1,5 @@
 function position = location(gps_data, distance)
-% INPUT: gps_data --string raw data from GPS
+% INPUT: gps_data -- 1 by 6 vector representing the location of two rovers in LLA
 %        distance --measured distance between two rovers in North-South direction
 % OUTPUT: position --1 by 6 vector representing the location of two rovers in local NED coordinates
 %         with respect to rover_left_base
@@ -15,13 +15,12 @@ function position = location(gps_data, distance)
     persistent Height_right_base;
     persistent wgs84;
     
-    split_result = strsplit(gps_data);
-    Latitude_left = str2double(split_result(3));
-    Longitude_left = str2double(split_result(4));
-    Height_left = str2double(split_result(5));
-    Latitude_right = str2double(split_result(18));
-    Longitude_right = str2double(split_result(19));
-    Height_right = str2double(split_result(20));
+    Latitude_left = gps_data(1);
+    Longitude_left = gps_data(2);
+    Height_left = gps_data(3);
+    Latitude_right = gps_data(4);
+    Longitude_right = gps_data(5);
+    Height_right = gps_data(6);
     
     if (isempty(Latitude_left_base))
         Latitude_left_base = Latitude_left;

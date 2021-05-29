@@ -26,11 +26,12 @@ function event_handler(~,~)
         return;
     end
     writeline(port, command_string);
-    raw_gps_data = readline(port);
-    rawdataHistory = [rawdataHistory; raw_gps_data];
-    position = location(raw_gps_data, 0.57);
+    raw_data = readline(port);
+    rawdataHistory = [rawdataHistory; raw_data];
+    [gps_data, IMU_data] = rawDataProcessing(raw_data);
     
-%     position = location_original(raw_gps_data);
+    position = location(gps_data, 0.57);
+    
     px_left = position(1);
     py_left = position(2);
     pz_left = position(3);
@@ -94,7 +95,7 @@ function event_handler(~,~)
     duty_cycle_PID = [duty_px;duty_py;0;0;0;duty_tz];
     duty_cycle = mixer_positive_dutyCycle(duty_cycle_PID);
     duty_cycle = duty_cycle_saturation(duty_cycle);
-    command_string = convertCMD(duty_cycle)
+    command_string = convertCMD(duty_cycle);
     duty_cyclesHistory = [duty_cyclesHistory, duty_cycle];
     
     
