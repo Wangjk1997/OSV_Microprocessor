@@ -5,6 +5,9 @@ function event_handler(~,~)
     global yawHistory;
     global rawdataHistory;
     global duty_cyclesHistory;
+    global axHistory;
+    global ayHistory;
+    global omegaHistory;
     global port;
     
     persistent currentState;
@@ -38,6 +41,10 @@ function event_handler(~,~)
     px_right = position(4);
     py_right = position(5);
     pz_right = position(6);
+    
+    ax = IMU_data(2);
+    ay = IMU_data(1);
+    omega = IMU_data(6);
     
     if(isempty(currentState))
         currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
@@ -90,6 +97,9 @@ function event_handler(~,~)
     pxHistory = [pxHistory, currentState.p_bn_n(1)];
     pyHistory = [pyHistory, currentState.p_bn_n(2)];
     yawHistory = [yawHistory, currentState.psi];
+    axHistory = [axHistory, ax];
+    ayHistory = [ayHistory, ay];
+    omegaHistory = [omegaHistory, omega];
     
     % convert force and torque to cmd
     duty_cycle_PID = [duty_px;duty_py;0;0;0;duty_tz];

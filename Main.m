@@ -9,14 +9,20 @@ global pyHistory;
 global yawHistory;
 global rawdataHistory;
 global duty_cyclesHistory;
+global axHistory;
+global ayHistory;
+global omegaHistory;
 
 pxHistory = [];
 pyHistory = [];
 yawHistory = [];
 rawdataHistory = [];
-fHistory = [];
 duty_cyclesHistory = [];
-duration = 0.1;
+axHistory = [];
+ayHistory = [];
+omegaHistory = [];
+
+duration = 0.01;
 time = 25;
 
 t = timer;
