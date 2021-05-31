@@ -62,7 +62,7 @@ void loop() {
           }
         else
         {
-          buff1 = rawData1;
+          buff1 = proccess_rawGPS(rawData1);
           rawData1 = "";
           }
        }
@@ -85,7 +85,7 @@ void loop() {
           }
         else
         {
-          buff2 = rawData2;
+          buff2 = proccess_rawGPS(rawData2);
           rawData2 = "";
           }
        }

@@ -82,3 +82,44 @@ String IMU_data(Adafruit_BNO055 bno, int accuracy)
   rawIMU = accx + " " + accy + " " + accz + " " + gyrox + " " + gyroy + " " + gyroz + " " + magx + " " + magy + " " + magz;
   return rawIMU;
   }
+
+String proccess_rawGPS(String raw_data)
+{
+  int flag_space = 0;
+  int index_space = 0; 
+  String output = "";
+  for(int i = 0; i <= raw_data.length(); i++)
+  {
+    if(isSpace(raw_data[i]))
+    {
+      if(flag_space == 0)
+      {
+        flag_space = 1;
+        index_space++;
+        }
+      }
+    else
+    {
+      if(flag_space == 0)
+      {
+        if(index_space>=2 && index_space<=4)
+        {
+          output += raw_data[i];
+          }
+        }
+      else
+      {
+        flag_space = 0;
+        if(index_space>=2 && index_space<=4)
+        {
+          if (index_space!= 2)
+          {
+            output += ",";
+            }
+          output += raw_data[i];
+          }
+        }
+      }
+    }
+    return output;
+}

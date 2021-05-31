@@ -20,6 +20,7 @@ function event_handler(~,~)
     persistent animation_frame_left;
     persistent animation_frame_right;
     persistent command_string;
+    persistent frame_id;
     
     %send command and receivie GPS data
     %initialize first command
@@ -76,6 +77,9 @@ function event_handler(~,~)
         pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.4, -0.4);
         pid_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw,duration, 0.2, -0.2);
       
+        % initialization Kalman Filter for yaw angle
+        
+        
         % plotting settings
         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
@@ -84,16 +88,20 @@ function event_handler(~,~)
         xlim manual;
         xlabel('North');
         ylabel('East');
+        
+        
         return;
     end
     
     % update rigidbody state
     currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right, currentState);
     
-    % updata PID Controller
+    % update PID Controller
     [pid_px_bn_n, duty_px] = pid_px_bn_n.calculate(ref_px_bn_n - currentState.p_bn_n(1));
     [pid_py_bn_n, duty_py] = pid_py_bn_n.calculate(ref_py_bn_n - currentState.p_bn_n(2));
     [pid_yaw, duty_tz] = pid_yaw.calculate((ref_yaw - currentState.psi) * 180/pi);
+    
+    % update Log
     pxHistory = [pxHistory, currentState.p_bn_n(1)];
     pyHistory = [pyHistory, currentState.p_bn_n(2)];
     yawHistory = [yawHistory, currentState.psi];

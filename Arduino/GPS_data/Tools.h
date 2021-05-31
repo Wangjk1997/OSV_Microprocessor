@@ -20,4 +20,5 @@ void send_data(String buff1, String buff2, String buff3);
 void m_set(int motor, int value);
 String getPart(int i , String s, char dlm);
 String IMU_data(Adafruit_BNO055 bno, int accuracy);
+String proccess_rawGPS(String raw_data);
 #endif
