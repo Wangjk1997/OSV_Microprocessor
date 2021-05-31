@@ -80,6 +80,7 @@ function event_handler(~,~)
         pid_py_bn_n = PIDController(kp_py_bn_n, ki_py_bn_n, kd_py_bn_n, duration, 0.4, -0.4);
         pid_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw,duration, 0.2, -0.2);
       
+
         % initialize Kalman Filter for yaw angle
         
         
@@ -117,7 +118,7 @@ function event_handler(~,~)
     command_string = convertCMD(duty_cycle);
     duty_cyclesHistory = [duty_cyclesHistory, duty_cycle];
     
-    
+
 %     % plot real time positions
 %     addpoints(animation_frame_left, px_left, py_left);
 %     addpoints(animation_frame_right, px_right, py_right);
