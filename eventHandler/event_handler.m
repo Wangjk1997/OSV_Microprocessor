@@ -17,16 +17,22 @@ function event_handler(~,~)
     persistent ref_px_bn_n;
     persistent ref_py_bn_n;
     persistent ref_yaw;
-    persistent animation_frame_left;
-    persistent animation_frame_right;
+%     persistent animation_frame_left;
+%     persistent animation_frame_right;
     persistent command_string;
     persistent frame_id;
     
     %send command and receivie GPS data
     %initialize first command
-    if(isempty(command_string))
+    if(isempty(frame_id))
+        frame_id = 1;
         command_string = '$01,SETM,255,255,255,255,255,255';
         port = serialport("COM3",230400);
+        return;
+    end
+    if(frame_id < 10)
+        readline(port);
+        frame_id = frame_id + 1;
         return;
     end
     writeline(port, command_string);
@@ -53,10 +59,7 @@ function event_handler(~,~)
         ref_px_bn_n = currentState.p_bn_n(1);
         ref_py_bn_n = currentState.p_bn_n(2);
         ref_yaw = currentState.psi;
-%         ref_px_bn_n = 0;
-%         ref_py_bn_n = 1;
-%         ref_yaw = pi/3;
-        
+
         %initialize PID parameters and controllers
         kp_px_bn_n = 0.2;
         ki_px_bn_n = 0;
@@ -80,17 +83,14 @@ function event_handler(~,~)
         % initialize Kalman Filter for yaw angle
         
         
-        % plotting settings
-        animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
-        animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
-        axis([-5,5,-5,5]);
-        axis equal;
-        xlim manual;
-        xlabel('North');
-        ylabel('East');
-        
-        % initialize frame
-        frame_id = 1;
+%         % plotting settings
+%         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
+%         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
+%         axis([-5,5,-5,5]);
+%         axis equal;
+%         xlim manual;
+%         xlabel('North');
+%         ylabel('East');
         return;
     end
     
@@ -118,10 +118,10 @@ function event_handler(~,~)
     duty_cyclesHistory = [duty_cyclesHistory, duty_cycle];
     
     
-    % plot real time positions
-    addpoints(animation_frame_left, px_left, py_left);
-    addpoints(animation_frame_right, px_right, py_right);
-    drawnow;
+%     % plot real time positions
+%     addpoints(animation_frame_left, px_left, py_left);
+%     addpoints(animation_frame_right, px_right, py_right);
+%     drawnow;
     
     % update frame id
     frame_id = frame_id + 1;
