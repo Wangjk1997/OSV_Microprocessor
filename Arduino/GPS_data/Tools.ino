@@ -3,9 +3,9 @@
 void send_data(String buff1, String buff2, String buff3)
 {
   Serial.print(buff1);
-  Serial.print(" ");
+  Serial.print(";");
   Serial.print(buff2);
-  Serial.print(" ");
+  Serial.print(";");
   Serial.print(buff3);
   Serial.write(13);
   Serial.write(10);
@@ -79,11 +79,11 @@ String IMU_data(Adafruit_BNO055 bno, int accuracy)
   String magx = String(magnetometer.x(), accuracy);
   String magy = String(magnetometer.y(), accuracy);
   String magz = String(magnetometer.z(), accuracy);
-  rawIMU = accx + " " + accy + " " + accz + " " + gyrox + " " + gyroy + " " + gyroz + " " + magx + " " + magy + " " + magz;
+  rawIMU = accx + "," + accy + "," + accz + "," + gyrox + "," + gyroy + "," + gyroz + "," + magx + "," + magy + "," + magz;
   return rawIMU;
   }
 
-String proccess_rawGPS(String raw_data)
+String process_rawGPS(String raw_data)
 {
   int flag_space = 0;
   int index_space = 0; 
