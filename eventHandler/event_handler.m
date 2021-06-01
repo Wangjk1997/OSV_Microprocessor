@@ -30,7 +30,7 @@ function event_handler(~,~)
         port = serialport("COM3",230400);
         return;
     end
-    if(frame_id < 10)
+    if(frame_id < 15)
         readline(port);
         frame_id = frame_id + 1;
         return;
