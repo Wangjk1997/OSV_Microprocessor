@@ -1,4 +1,4 @@
-clear all
+
 % add path
 addpath('.\tools');
 addpath('.\eventHandler');
@@ -12,6 +12,7 @@ global duty_cyclesHistory;
 global axHistory;
 global ayHistory;
 global omegaHistory;
+global port;
 
 pxHistory = [];
 pyHistory = [];
@@ -22,8 +23,8 @@ axHistory = [];
 ayHistory = [];
 omegaHistory = [];
 
-duration = 0.01;
-time = 25;
+duration = 0.05;
+time = 180;
 
 t = timer;
 t.ExecutionMode = 'fixedRate';
@@ -33,6 +34,6 @@ t.TimerFcn = @event_handler;
 % t.TimerFcn = @event_handler_test;
 t.StopFcn = @save_workspace;
 start(t);
-
+delete t;
 
 

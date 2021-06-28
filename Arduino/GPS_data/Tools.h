@@ -16,7 +16,7 @@ const int MOTOR3_PIN = 8;
 
 static const int COMMAND_EXPIRATION = 500;
 
-void send_data(String buff1, String buff2, String buff3);
+void send_data(String buff1, String buff2);
 void m_set(int motor, int value);
 String getPart(int i , String s, char dlm);
 String IMU_data(Adafruit_BNO055 bno, int accuracy);

@@ -15,7 +15,7 @@ while(true)
   val = getkey;
   %For OSV
   if val == 119 %w
-      writeline(port,'$01,SETASM,255,300,300,255,255,255');
+      writeline(port,'$01,SETM,255,300,300,255,255,255');
   elseif val == 115 %s
       writeline(port,'$01,SETM,300,255,255,300,255,255');
   elseif val == 97 %a

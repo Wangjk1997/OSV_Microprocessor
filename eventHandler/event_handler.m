@@ -17,8 +17,6 @@ function event_handler(~,~)
     persistent ref_px_bn_n;
     persistent ref_py_bn_n;
     persistent ref_yaw;
-%     persistent animation_frame_left;
-%     persistent animation_frame_right;
     persistent command_string;
     persistent frame_id;
     
@@ -27,38 +25,43 @@ function event_handler(~,~)
     if(isempty(frame_id))
         frame_id = 1;
         command_string = '$01,SETM,255,255,255,255,255,255';
-        port = serialport("COM3",230400);
         return;
     end
     if(frame_id < 15)
-        readline(port);
+        command_string = '$01,SETM,255,255,255,255,255,255';
+        writeline(port, command_string);
+        readline(port)
         frame_id = frame_id + 1;
         return;
     end
     writeline(port, command_string);
     raw_data = readline(port);
     rawdataHistory = [rawdataHistory; raw_data];
+    
     [gps_data, IMU_data] = rawDataProcessing(raw_data);
     
-    position = location(gps_data, 0.57);
+    position = location(gps_data);
     
-    px_left = position(1);
-    py_left = position(2);
-    pz_left = position(3);
-    px_right = position(4);
-    py_right = position(5);
-    pz_right = position(6);
+    px_GPS = position(1);
+    py_GPS = position(2);
+    pz_GPS = position(3);
     
     ax = IMU_data(2);
     ay = IMU_data(1);
-    omega = IMU_data(6);
+    omega = IMU_data(4);
+    % Mapping [0,360) to [-180,180);
+    if (IMU_data(7) > 180 && IMU_data(7) < 360)
+        theta = (IMU_data(7) - 360);
+    else
+        theta = IMU_data(7);
+    end
     
     if(isempty(currentState))
-        currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right);
+        currentState = RigidBodyState_plane(duration, px_GPS, py_GPS, theta);
         %initialize reference
         ref_px_bn_n = currentState.p_bn_n(1);
         ref_py_bn_n = currentState.p_bn_n(2);
-        ref_yaw = currentState.psi;
+        ref_yaw = currentState.theta;
 
         %initialize PID parameters and controllers
         kp_px_bn_n = 0.2;
@@ -81,32 +84,23 @@ function event_handler(~,~)
         pid_yaw = PIDController(kp_yaw, ki_yaw, kd_yaw,duration, 0.2, -0.2);
       
 
-        % initialize Kalman Filter for yaw angle
+        % initialize Kalman Filter
         
-        
-%         % plotting settings
-%         animation_frame_left = animatedline('Marker', 'o', 'color', 'b', 'LineStyle', 'none', 'MaximumNumPoints', 1);
-%         animation_frame_right = animatedline('Marker', 'o', 'color', 'r', 'LineStyle', 'none', 'MaximumNumPoints', 1);
-%         axis([-5,5,-5,5]);
-%         axis equal;
-%         xlim manual;
-%         xlabel('North');
-%         ylabel('East');
         return;
     end
     
     % update rigidbody state
-    currentState = RigidBodyState_plane(duration, px_left, py_left, px_right, py_right, currentState);
+    currentState = RigidBodyState_plane(duration, px_GPS, py_GPS, theta, currentState);
     
     % update PID Controller
     [pid_px_bn_n, duty_px] = pid_px_bn_n.calculate(ref_px_bn_n - currentState.p_bn_n(1));
     [pid_py_bn_n, duty_py] = pid_py_bn_n.calculate(ref_py_bn_n - currentState.p_bn_n(2));
-    [pid_yaw, duty_tz] = pid_yaw.calculate((ref_yaw - currentState.psi) * 180/pi);
+    [pid_yaw, duty_tz] = pid_yaw.calculate((ref_yaw - currentState.theta) * 180/pi);
     
     % update Log
     pxHistory = [pxHistory, currentState.p_bn_n(1)];
     pyHistory = [pyHistory, currentState.p_bn_n(2)];
-    yawHistory = [yawHistory, currentState.psi];
+    yawHistory = [yawHistory, currentState.theta];
     axHistory = [axHistory, ax];
     ayHistory = [ayHistory, ay];
     omegaHistory = [omegaHistory, omega];
@@ -117,12 +111,6 @@ function event_handler(~,~)
     duty_cycle = duty_cycle_saturation(duty_cycle);
     command_string = convertCMD(duty_cycle);
     duty_cyclesHistory = [duty_cyclesHistory, duty_cycle];
-    
-
-%     % plot real time positions
-%     addpoints(animation_frame_left, px_left, py_left);
-%     addpoints(animation_frame_right, px_right, py_right);
-%     drawnow;
     
     % update frame id
     frame_id = frame_id + 1;
