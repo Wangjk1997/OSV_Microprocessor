@@ -6,6 +6,8 @@ addpath('.\eventHandler');
 global duration;
 global pxHistory;
 global pyHistory;
+global pxHistory_GPS;
+global pyHistory_GPS;
 global yawHistory;
 global rawdataHistory;
 global duty_cyclesHistory;
@@ -16,6 +18,8 @@ global port;
 
 pxHistory = [];
 pyHistory = [];
+pxHistory_GPS = [];
+pyHistory_GPS = [];
 yawHistory = [];
 rawdataHistory = [];
 duty_cyclesHistory = [];
@@ -34,6 +38,6 @@ t.TimerFcn = @event_handler;
 % t.TimerFcn = @event_handler_test;
 t.StopFcn = @save_workspace;
 start(t);
-delete t;
+
 
 

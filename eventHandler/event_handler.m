@@ -2,6 +2,8 @@ function event_handler(~,~)
     global duration;
     global pxHistory;
     global pyHistory;
+    global pxHistory_GPS;
+    global pyHistory_GPS;
     global yawHistory;
     global rawdataHistory;
     global duty_cyclesHistory;
@@ -17,6 +19,8 @@ function event_handler(~,~)
     persistent ref_px_bn_n;
     persistent ref_py_bn_n;
     persistent ref_yaw;
+    persistent KF_x;
+    persistent KF_y;
     persistent command_string;
     persistent frame_id;
     
@@ -30,7 +34,7 @@ function event_handler(~,~)
     if(frame_id < 15)
         command_string = '$01,SETM,255,255,255,255,255,255';
         writeline(port, command_string);
-        readline(port)
+        readline(port);
         frame_id = frame_id + 1;
         return;
     end
@@ -56,6 +60,7 @@ function event_handler(~,~)
         theta = IMU_data(7);
     end
     
+    % Initialization
     if(isempty(currentState))
         currentState = RigidBodyState_plane(duration, px_GPS, py_GPS, theta);
         %initialize reference
@@ -85,12 +90,30 @@ function event_handler(~,~)
       
 
         % initialize Kalman Filter
-        
+        A = [1, duration; 0, 1];
+        B = [(duration^2)/2; duration];
+        H = [1,0];
+        q = 1;
+        Q = [q*(duration^3)/3, q*(duration^2)/2;q*(duration^2)/2, q*duration];
+        r = 0.05;
+        R = r/duration;
+%         KF_x = KalmanFilter(A, B, Q, R, H, [currentState.p_bn_n(1);0], [0,0;0,0]);
+%         KF_y = KalmanFilter(A, B, Q, R, H, [currentState.p_bn_n(2);0], [0,0;0,0]);
+        KF_x = KalmanFilter(A, B, Q, R, H, [0;0], [0,0;0,0]);
+        KF_y = KalmanFilter(A, B, Q, R, H, [0;0], [0,0;0,0]);
         return;
     end
     
+    % update Kalman Filter
+    KF_x = KF_x.time_update(ax);
+    KF_y = KF_y.time_update(ay);
+    if (mod(frame_id, 2) == 0)
+        KF_x = KF_x.measurement_update(px_GPS);
+        KF_y = KF_y.measurement_update(py_GPS);
+    end
+    
     % update rigidbody state
-    currentState = RigidBodyState_plane(duration, px_GPS, py_GPS, theta, currentState);
+    currentState = RigidBodyState_plane(duration,KF_x.x(1), KF_y.x(1), theta, currentState);
     
     % update PID Controller
     [pid_px_bn_n, duty_px] = pid_px_bn_n.calculate(ref_px_bn_n - currentState.p_bn_n(1));
@@ -98,6 +121,8 @@ function event_handler(~,~)
     [pid_yaw, duty_tz] = pid_yaw.calculate((ref_yaw - currentState.theta) * 180/pi);
     
     % update Log
+    pxHistory_GPS = [pxHistory_GPS, px_GPS];
+    pyHistory_GPS = [pyHistory_GPS, py_GPS];
     pxHistory = [pxHistory, currentState.p_bn_n(1)];
     pyHistory = [pyHistory, currentState.p_bn_n(2)];
     yawHistory = [yawHistory, currentState.theta];

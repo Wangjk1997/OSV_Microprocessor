@@ -1,6 +1,8 @@
 function save_workspace(~,~)
     global pxHistory;
     global pyHistory;
+    global pxHistory_GPS;
+    global pyHistory_GPS;
     global yawHistory;
     global rawdataHistory;
     global duty_cyclesHistory;
@@ -10,14 +12,10 @@ function save_workspace(~,~)
     global port;
     global duration;
     
-    
-%     px_history = pxHistory;
-%     py_history = pyHistory;
-%     yaw_history =  yawHistory;
-%     rawdata_history =  rawdataHistory;
-%     dutycycle_history =  duty_cyclesHistory;
     pxHistory;
     pyHistory;
+    pxHistory_GPS;
+    pyHistory_GPS;
     yawHistory;
     rawdataHistory;
     duty_cyclesHistory;
@@ -36,12 +34,22 @@ function save_workspace(~,~)
     
     % plot figures
     figure(1);
-    plot((1:length(pxHistory)) * duration, pxHistory);
-    title("px");
+    p1 = plot((1:length(pxHistory)) * duration, pxHistory);
+    hold on
+    p2 = plot((1:length(pxHistory_GPS)) * duration, pxHistory_GPS);
+    title("Position in x direction")
+    xlabel("time/s")
+    ylabel("position/m")
+%     legend([p1,p2],{'Data from the GPS','Data from data fusion'})
     
     figure(2);
-    plot((1:length(pyHistory)) * duration, pyHistory);
-    title("py");
+    p3 = plot((1:length(pyHistory)) * duration, pyHistory);
+    hold on
+    p4 = plot((1:length(pyHistory_GPS)) * duration, pyHistory_GPS);
+    title("Position in y direction");
+    xlabel("time/s")
+    ylabel("position/m")
+%     legend([p3,p4],{'Data from the GPS','Data from data fusion'})
     
     figure(3);
     plot((1:length(yawHistory)) * duration, yawHistory);
